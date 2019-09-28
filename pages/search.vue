@@ -68,61 +68,26 @@
     </section>
     <section>
       <section class="result">
-        <div
+        <pull-card
           v-for="(pull, key) in pulls"
           :key="key"
-          class="pull-info-item"
-        >
-          <p>
-            <a
-              :href="`https://github.com/${pull.user.login}`"
-              target="_blank"
-              class="info-line-block"
-            >
-              <b-icon
-                icon="account"
-                size="is-small"
-              />
-              {{ pull.user.login }}
-            </a>
-            <span class="info-line-block">
-              <b-icon
-                icon="clock"
-                size="is-small"
-              />
-              created: {{ formatDate(new Date(pull.created_at)) }}
-            </span>
-            <span v-if="pull.merged_at" class="info-line-block">
-              <b-icon
-                icon="check"
-                size="is-small"
-              />
-              merged: {{ formatDate(new Date(pull.merged_at)) }}
-            </span>
-            <span v-if="!pull.merged_at && pull.closed_at" class="info-line-block">
-              <b-icon
-                icon="cross"
-                size="is-small"
-              />
-              closed: {{ formatDate(new Date(pull.closed_at)) }}
-            </span>
-          </p>
-          <a :href="pull.html_url" target="_blank">
-            {{ pull.title }}
-          </a>
-        </div>
+          :pull="pull"
+        />
       </section>
     </section>
   </section>
 </template>
 
 <script>
-const { formatDate } = require('@/utils/datetime')
+import PullCard from '@/components/PullCard'
 
 const now = new Date()
 
 export default {
   name: 'Search',
+  components: {
+    PullCard
+  },
   data () {
     return {
       selected: {
@@ -165,7 +130,6 @@ export default {
     }
   },
   methods: {
-    formatDate,
     search () {
       const data = {
         owner: this.selected.owner,
@@ -198,15 +162,4 @@ export default {
   label
     color transparent
     user-select none
-
-.pull-info-item
-  border-radius 2px
-  border 1px solid #7957d5
-  padding 10px 5px
-  margin-top 5px
-  &:first-child
-    margin-top 0
-  .info-line-block
-    display inline-block
-    width 200px
 </style>
