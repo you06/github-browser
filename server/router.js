@@ -14,6 +14,11 @@ function initRoute(cfg, pkg) {
 
   // pull queries
   router.get('/pulls/query', ctl.pull.getPulls)
+  router.get('/pulls/subtask', ctl.pull.subtask)
+
+  // pull queries
+  router.get('/db/views', ctl.db.getViews)
+  router.get('/db/view', ctl.db.getView)
 
   return router
 }

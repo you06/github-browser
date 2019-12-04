@@ -47,6 +47,21 @@ module.exports = function(cfg, pkg) {
           }
         })
       )
+    },
+    async subtask(ctx, next) {
+      const {
+        link
+      } = ctx.request.query
+      const m = link.match(/https:\/\/github.com\/(.*?)\/(.*?)\/issues\/([0-9]+?)$/)
+      if (m === null) {
+        ctx.body = json(false)
+        return
+      }
+      const [_, org, repo, number] = m
+      console.log(org, repo, number)
+      const { body } = pkg.github.pull(org, repo, number)
+      ctx.body = body
+
     }
   }
 }

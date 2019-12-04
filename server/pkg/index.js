@@ -1,7 +1,9 @@
 const Github = require('./github')
+const DB = require('./database')
 
 module.exports = (cfg) => {
   return {
-    github: Github(cfg)
+    github: new Github(cfg),
+    db: new DB(cfg)
   }
 }

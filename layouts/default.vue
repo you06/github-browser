@@ -58,14 +58,19 @@ export default {
     return {
       items: [
         {
-          title: 'Search',
-          icon: 'cloud-search',
-          to: { name: 'search' }
+          title: 'Query',
+          icon: 'database',
+          to: { name: 'query' }
         }
         // {
-        //   title: 'Inspire',
+        //   title: 'Search',
+        //   icon: 'cloud-search',
+        //   to: { name: 'search' }
+        // },
+        // {
+        //   title: 'Subtask',
         //   icon: 'lightbulb',
-        //   to: { name: 'inspire' }
+        //   to: { name: 'subtask' }
         // }
       ]
     }
