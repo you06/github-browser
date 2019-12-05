@@ -88,6 +88,9 @@ module.exports = class {
 
     const pulls = (await this.query(`SELECT * FROM pulls WHERE pull_number IN (${pullsNumbers.map(item => item.number).join(',')})`))
       .filter(item => {
+        if (item.user === github) {
+          return false
+        }
         for (let i = 0; i < pullsNumbers.length; i++) {
           if (pullsNumbers[i].owner === item.owner
             && pullsNumbers[i].repo === item.repo
