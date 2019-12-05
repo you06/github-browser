@@ -61,6 +61,11 @@ export default {
           title: 'Query',
           icon: 'database',
           to: { name: 'query' }
+        },
+        {
+          title: 'Review',
+          icon: 'lightbulb',
+          to: { name: 'review' }
         }
         // {
         //   title: 'Search',

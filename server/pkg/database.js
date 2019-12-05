@@ -3,23 +3,31 @@ const mysql = require('mysql')
 const SCHEMA_SQL = `SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE FROM information_schema.tables`
 
 module.exports = class {
-  constructor(cfg) {
+  constructor (cfg) {
     this.cfg = cfg
     this.database = this.cfg.database
     this.driver = mysql.createConnection(this.database)
     this.driver.connect()
   }
   
-  async query(sql) {
+  async query (sql, args) {
     return new Promise((resolve, reject) => {
-      this.driver.query(sql, (error, results, fields) => {
-        if (error) reject(error)
+      function cb(error, results, fields) {
+        if (error) {
+          console.log(error)
+          reject(error)
+        }
         resolve(results)
-      })
+      }
+      if (args) {
+        this.driver.query(sql, args, cb)
+      } else {
+        this.driver.query(sql, cb)
+      }
     })
   }
 
-  async getViewTables() {
+  async getViewTables () {
     const tables = await this.query(SCHEMA_SQL)
     const views = []
     for (const table of tables) {
@@ -30,7 +38,7 @@ module.exports = class {
     return views
   }
 
-  async getColumns(view) {
+  async getColumns (view) {
     const schema = await this.query(`DESC ${view}`)
     const cols = []
     for (const c of schema) {
@@ -39,7 +47,59 @@ module.exports = class {
     return cols
   }
 
-  async queryView(view) {
+  async queryView (view) {
     return await this.query(`SELECT * FROM ${view}`)
+  }
+
+  async getReviewPulls ({ github, start, end }) {
+    const comments = (await this.query(`SELECT * FROM comments WHERE user = ? AND created_at BETWEEN ? AND ?`, [
+      github,
+      start,
+      end
+    ])).filter(item => {
+      return !item.body.startsWith('/')
+    })
+
+    const pullsNumbers = comments.reduce((arr, comment) => {
+      let skip = false
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].owner === comment.owner
+          && arr[i].repo === comment.repo
+          && arr[i].number === comment.pull_number) {
+            skip = true
+          }
+      }
+      if (!skip) {
+        arr.push({
+          owner: comment.owner,
+          repo: comment.repo,
+          number: comment.pull_number
+        })
+      }
+      return arr
+    }, [])
+
+    if (pullsNumbers.length === 0) {
+      return {
+        pulls: [],
+        comments: []
+      }
+    }
+
+    const pulls = (await this.query(`SELECT * FROM pulls WHERE pull_number IN (${pullsNumbers.map(item => item.number).join(',')})`))
+      .filter(item => {
+        for (let i = 0; i < pullsNumbers.length; i++) {
+          if (pullsNumbers[i].owner === item.owner
+            && pullsNumbers[i].repo === item.repo
+            && pullsNumbers[i].number === item.pull_number) {
+              return true
+            }
+        }
+        return false
+      })
+    return {
+      pulls,
+      comments
+    }
   }
 }

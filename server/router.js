@@ -19,6 +19,7 @@ function initRoute(cfg, pkg) {
   // pull queries
   router.get('/db/views', ctl.db.getViews)
   router.get('/db/view', ctl.db.getView)
+  router.get('/db/review', ctl.db.getReview)
 
   return router
 }
