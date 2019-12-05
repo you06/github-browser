@@ -35,6 +35,9 @@
     </section>
     <section>
       <p>{{ selected.github }} reviewed {{ pulls.length }} during {{ displayStart }} - {{ displayEnd }}</p>
+      <p>
+        If you can not find some repos here, following this <a href="https://internal.pingcap.net/confluence/pages/viewpage.action?pageId=71176848" target="_blank">guide</a> to add repos.
+      </p>
       <section class="result">
         <pull-card
           v-for="(pull, key) in pulls"
