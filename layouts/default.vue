@@ -66,6 +66,11 @@ export default {
           title: 'Review',
           icon: 'lightbulb',
           to: { name: 'review' }
+        },
+        {
+          title: 'Member',
+          icon: 'account',
+          to: { name: 'member' }
         }
         // {
         //   title: 'Search',

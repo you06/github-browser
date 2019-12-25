@@ -9,10 +9,10 @@ module.exports = class {
     this.driver = mysql.createConnection(this.database)
     this.driver.connect()
   }
-  
+
   async query (sql, args) {
     return new Promise((resolve, reject) => {
-      function cb(error, results, fields) {
+      function cb (error, results, fields) {
         if (error) {
           console.log(error)
           reject(error)
@@ -66,8 +66,8 @@ module.exports = class {
         if (arr[i].owner === comment.owner
           && arr[i].repo === comment.repo
           && arr[i].number === comment.pull_number) {
-            skip = true
-          }
+          skip = true
+        }
       }
       if (!skip) {
         arr.push({
@@ -95,8 +95,8 @@ module.exports = class {
           if (pullsNumbers[i].owner === item.owner
             && pullsNumbers[i].repo === item.repo
             && pullsNumbers[i].number === item.pull_number) {
-              return true
-            }
+            return true
+          }
         }
         return false
       })
@@ -104,5 +104,27 @@ module.exports = class {
       pulls,
       comments
     }
+  }
+
+  async queryReviewers () {
+    const reviewers = await this.query(`SELECT * FROM reviewers`)
+    return reviewers
+  }
+
+  async getReviewerById (id) {
+    const member = await this.query(`SELECT * FROM reviewers WHERE id = ?`, id)
+    return member
+  }
+  async deleteReviewerById (github_id) {
+    const status = await this.query('delete from reviewers WHERE github_id = ?', github_id)
+    return status
+  }
+  async updateReviewerById ({ github_id, email, organization, slack_id, group_name, role, id }) {
+    const status = await this.query('UPDATE reviewers SET github_id=?,email=?,organization=?,slack_id=?,group_name=?,role=? WHERE github_id = ?', [github_id, email, organization, slack_id, group_name, role, id])
+    return status
+  }
+  async insertReviewer ({ github_id, email, organization, slack_id, group_name, role }) {
+    const id = await this.query('INSERT INTO reviewers (github_id, email, organization, slack_id, group_name, role) VALUES (?,?,?,?,?,?)', [github_id, email, organization, slack_id, group_name, role])
+    return id
   }
 }
