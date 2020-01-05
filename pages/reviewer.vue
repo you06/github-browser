@@ -10,13 +10,13 @@
           <span>Clear selected</span>
         </button>
       </b-field>
-      <b-field label="reviewInfo" class="column">
+      <b-field label="prInfo" class="column">
         <button
           @click="reviewInfo"
           :disabled="!selected"
           class="button field is-info"
         >
-          <span>reviewInfo</span>
+          <span>prInfo</span>
         </button>
       </b-field>
       <no-ssr>
