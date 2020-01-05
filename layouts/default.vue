@@ -71,6 +71,11 @@ export default {
           title: 'Member',
           icon: 'account',
           to: { name: 'member' }
+        },
+        {
+          title: 'Reviewers',
+          icon: 'account',
+          to: { name: 'reviewer' }
         }
         // {
         //   title: 'Search',
