@@ -56,7 +56,7 @@ module.exports = class {
       github,
       start,
       end
-    ])).filter(item => {
+    ])).filter((item) => {
       return !item.body.startsWith('/')
     })
 
@@ -87,7 +87,7 @@ module.exports = class {
     }
 
     const pulls = (await this.query(`SELECT * FROM pulls WHERE pull_number IN (${pullsNumbers.map(item => item.number).join(',')})`))
-      .filter(item => {
+      .filter((item) => {
         if (item.user === github) {
           return false
         }
@@ -106,14 +106,59 @@ module.exports = class {
     }
   }
 
-  async queryReviewers () {
-    const reviewers = await this.query(`SELECT * FROM reviewers`)
+  async queryReviewers ({ start, end }) {
+    const reviewers = await this.query(`SELECT
+                                          c.user AS user,
+                                          count( DISTINCT c.pull_number ) AS number
+                                        FROM
+                                          pulls AS p,
+                                          comments AS c 
+                                        WHERE
+                                          c.relation = 'not member' 
+                                          AND p.pull_number = c.pull_number 
+                                          AND p.owner = c.owner 
+                                          AND p.repo = c.repo
+                                          AND p.user != c.user
+                                          AND c.created_at BETWEEN ? 
+                                          AND ? 
+                                        GROUP BY
+                                        USER 
+                                        ORDER BY
+                                          number DESC`,
+    [
+      start,
+      end
+    ])
     return reviewers
   }
 
-  async getReviewerById (id) {
-    const member = await this.query(`SELECT * FROM reviewers WHERE id = ?`, id)
-    return member
+  async getReviewerById (user, start, end) {
+    const pullInfo = (await this.query(`SELECT DISTINCT
+                                          p.pull_number AS pull_id,
+                                          p.user AS user,
+                                          p.repo AS repo,
+                                          title,
+                                          p.created_at AS created_at,
+                                          p.merged_at AS merged_at 
+                                        FROM
+                                          pulls AS p,
+                                          comments AS c 
+                                        WHERE
+                                          c.USER = ? 
+                                          AND p.pull_number = c.pull_number 
+                                          AND p.repo = c.repo 
+                                          AND p.owner = c.owner 
+                                          AND p.user != c.user
+                                          AND p.created_at BETWEEN ? 
+                                          AND ?`,
+    [user, start, end]))
+      .filter((item) => {
+        if (item.user === user) {
+          return false
+        }
+        return true
+      })
+    return pullInfo
   }
   async deleteReviewerById (github_id) {
     const status = await this.query('delete from reviewers WHERE github_id = ?', github_id)

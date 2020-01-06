@@ -28,14 +28,20 @@ module.exports = function (cfg, pkg) {
     },
 
     async getReviewers (ctx) {
-      ctx.body = json(await pkg.db.queryReviewers())
+      const {
+        start,
+        end
+      } = ctx.request.query
+      ctx.body = json(await pkg.db.queryReviewers({ start, end }))
     },
 
     async getReviewerById (ctx) {
       const {
-        id
+        user,
+        start,
+        end
       } = ctx.request.query
-      ctx.body = json(await pkg.db.getReviewerById(id))
+      ctx.body = json(await pkg.db.getReviewerById(user, start, end))
     },
 
     async deleteReviewerById (ctx) {
