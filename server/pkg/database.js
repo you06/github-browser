@@ -63,9 +63,9 @@ module.exports = class {
     const pullsNumbers = comments.reduce((arr, comment) => {
       let skip = false
       for (let i = 0; i < arr.length; i++) {
-        if (arr[i].owner === comment.owner
-          && arr[i].repo === comment.repo
-          && arr[i].number === comment.pull_number) {
+        if (arr[i].owner === comment.owner &&
+          arr[i].repo === comment.repo &&
+          arr[i].number === comment.pull_number) {
           skip = true
         }
       }
@@ -92,9 +92,9 @@ module.exports = class {
           return false
         }
         for (let i = 0; i < pullsNumbers.length; i++) {
-          if (pullsNumbers[i].owner === item.owner
-            && pullsNumbers[i].repo === item.repo
-            && pullsNumbers[i].number === item.pull_number) {
+          if (pullsNumbers[i].owner === item.owner &&
+            pullsNumbers[i].repo === item.repo &&
+            pullsNumbers[i].number === item.pull_number) {
             return true
           }
         }
