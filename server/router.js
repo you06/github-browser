@@ -25,6 +25,7 @@ function initRoute(cfg, pkg) {
   router.get('/db/delete_reviewer', ctl.db.deleteReviewerById)
   router.get('/db/add_reviewer', ctl.db.addReviewer)
   router.get('/db/update_reviewer', ctl.db.editReviewer)
+  router.get('/db/members', ctl.db.getMembers)
 
   return router
 }

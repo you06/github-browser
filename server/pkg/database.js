@@ -106,6 +106,10 @@ module.exports = class {
     }
   }
 
+  async queryMembers() {
+    return await this.query(`SELECT * FROM reviewers`)
+  }
+
   async queryReviewers ({ start, end }) {
     const reviewers = await this.query(`SELECT
                                           c.user AS user,
@@ -114,13 +118,13 @@ module.exports = class {
                                           pulls AS p,
                                           comments AS c 
                                         WHERE
-                                          c.relation = 'not member' 
+                                          c.user IN (SELECT github_id FROM reviewers) 
                                           AND p.pull_number = c.pull_number 
                                           AND p.owner = c.owner 
                                           AND p.repo = c.repo
                                           AND p.user != c.user
                                           AND c.created_at BETWEEN ? 
-                                          AND ? 
+                                          AND ?
                                         GROUP BY
                                         USER 
                                         ORDER BY
