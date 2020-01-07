@@ -50,13 +50,13 @@ module.exports = function (cfg, pkg) {
       ctx.body = json(reviews)
     },
 
-    async getReviewerById (ctx) {
+    async getReviewerByUser (ctx) {
       const {
         user,
         start,
         end
       } = ctx.request.query
-      ctx.body = json(await pkg.db.getReviewerById(user, start, end))
+      ctx.body = json(await pkg.db.getReviewerByUser(user, start, end))
     },
 
     async deleteReviewerById (ctx) {
