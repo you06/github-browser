@@ -1,9 +1,32 @@
 <template>
-  <section>
+  <section class="section">
     <b-table
       :data="data"
       :columns="columns"
-    />
+    >
+      <template slot-scope="props">
+        <b-table-column field="pull_id" label="Pull ID">
+          {{ props.row.pull_id }}
+        </b-table-column>
+        <b-table-column field="user" label="User">
+          {{ props.row.user }}
+        </b-table-column>
+        <b-table-column field="repo" label="Repo">
+          {{ props.row.repo }}
+        </b-table-column>
+        <b-table-column field="title" label="Title">
+          <a target="_blank" :href="`https://github.com/${props.row.owner}/${props.row.repo}/pull/${props.row.pull_id}`">
+            {{ props.row.title }}
+          </a>
+        </b-table-column>
+        <b-table-column field="created_at" label="Created At">
+          {{ props.row.created_at }}
+        </b-table-column>
+        <b-table-column field="merged_at" label="Merged At">
+          {{ props.row.merged_at }}
+        </b-table-column>
+      </template>
+    </b-table>
   </section>
 </template>
 
@@ -63,6 +86,7 @@ export default {
             const p = {
               pull_id: res[i].pull_id,
               user: res[i].user,
+              owner: res[i].owner,
               repo: res[i].repo,
               title: res[i].title,
               created_at: res[i].created_at.substring(0, 10),

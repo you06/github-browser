@@ -1,20 +1,20 @@
 <template>
-  <section>
+  <section class="section">
     <section class="selection columns">
       <b-field label="GitHub" class="column">
         <button
-          @click="selected = null"
           :disabled="!selected"
           class="button field is-primary"
+          @click="selected = null"
         >
           <span>Clear selected</span>
         </button>
       </b-field>
       <b-field label="prInfo" class="column">
         <button
-          @click="reviewInfo"
           :disabled="!selected"
           class="button field is-info"
+          @click="reviewInfo"
         >
           <span>prInfo</span>
         </button>
@@ -37,8 +37,8 @@
       </no-ssr>
       <b-field label="Search" class="column hidden-label">
         <b-button
-          @click="search"
           type="is-info"
+          @click="search"
         >
           Search
         </b-button>

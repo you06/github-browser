@@ -1,30 +1,30 @@
 <template>
-  <section>
+  <section class="section">
     <button
-      @click="selected = null"
       :disabled="!selected"
       class="button field is-primary"
+      @click="selected = null"
     >
       <span>Clear selected</span>
     </button>
     <button
-      @click="add"
       class="button field is-success"
       to="./add_member"
+      @click="add"
     >
       <span>Add</span>
     </button>
     <button
-      @click="edit"
       :disabled="!selected"
       class="button field is-info"
+      @click="edit"
     >
       <span>edit</span>
     </button>
     <button
-      @click="deleteRow"
       :disabled="!selected"
       class="button field is-danger"
+      @click="deleteRow"
     >
       <span>delete</span>
     </button>
@@ -92,7 +92,7 @@ export default {
   methods: {
     init () {
       this.$axios
-        .get('/db/reviewers')
+        .get('/db/members')
         .then((result) => {
           const res = result.data.data
           this.data = res

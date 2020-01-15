@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="section">
     <b-field label="github_id">
       <b-input v-model="github_id" value="" />
     </b-field>
@@ -39,8 +39,8 @@
     </b-field>
 
     <button
-      @click="add"
       class="button is-primary"
+      @click="add"
     >
       <span>commit</span>
     </button>

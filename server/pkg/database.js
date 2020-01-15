@@ -106,6 +106,10 @@ module.exports = class {
     }
   }
 
+  async queryMembers() {
+    return await this.query(`SELECT * FROM reviewers`)
+  }
+
   async queryReviewers ({ start, end }) {
     const reviewers = await this.query(`SELECT
                                           c.user AS user,
@@ -114,13 +118,13 @@ module.exports = class {
                                           pulls AS p,
                                           comments AS c 
                                         WHERE
-                                          c.relation = 'not member' 
+                                          c.user IN (SELECT github_id FROM reviewers) 
                                           AND p.pull_number = c.pull_number 
                                           AND p.owner = c.owner 
                                           AND p.repo = c.repo
                                           AND p.user != c.user
                                           AND c.created_at BETWEEN ? 
-                                          AND ? 
+                                          AND ?
                                         GROUP BY
                                         USER 
                                         ORDER BY
@@ -132,10 +136,11 @@ module.exports = class {
     return reviewers
   }
 
-  async getReviewerById (user, start, end) {
+  async getReviewerByUser (user, start, end) {
     const pullInfo = (await this.query(`SELECT DISTINCT
                                           p.pull_number AS pull_id,
                                           p.user AS user,
+                                          p.owner AS owner,
                                           p.repo AS repo,
                                           title,
                                           p.created_at AS created_at,
@@ -144,20 +149,20 @@ module.exports = class {
                                           pulls AS p,
                                           comments AS c 
                                         WHERE
-                                          c.USER = ? 
+                                          c.user = ? 
                                           AND p.pull_number = c.pull_number 
                                           AND p.repo = c.repo 
                                           AND p.owner = c.owner 
                                           AND p.user != c.user
-                                          AND p.created_at BETWEEN ? 
+                                          AND c.created_at BETWEEN ? 
                                           AND ?`,
     [user, start, end]))
-      .filter((item) => {
-        if (item.user === user) {
-          return false
-        }
-        return true
-      })
+      // .filter((item) => {
+      //   if (item.user === user) {
+      //     return false
+      //   }
+      //   return true
+      // })
     return pullInfo
   }
   async deleteReviewerById (github_id) {
