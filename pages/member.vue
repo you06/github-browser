@@ -2,29 +2,29 @@
   <section class="section">
     <button
       :disabled="!selected"
-      class="button field is-primary"
       @click="selected = null"
+      class="button field is-primary"
     >
       <span>Clear selected</span>
     </button>
     <button
+      @click="add"
       class="button field is-success"
       to="./add_member"
-      @click="add"
     >
       <span>Add</span>
     </button>
     <button
       :disabled="!selected"
-      class="button field is-info"
       @click="edit"
+      class="button field is-info"
     >
       <span>edit</span>
     </button>
     <button
       :disabled="!selected"
-      class="button field is-danger"
       @click="deleteRow"
+      class="button field is-danger"
     >
       <span>delete</span>
     </button>
@@ -35,6 +35,11 @@
           :data="data"
           :columns="columns"
           :selected.sync="selected"
+          :paginated="true"
+          :per-page="5"
+          :current-page="1"
+          :pagination-simple="false"
+          :pagination-position="bottom"
           focusable
         />
       </b-tab-item>
@@ -70,7 +75,7 @@ export default {
         },
         {
           field: 'slack_id',
-          label: 'Slack Id',
+          label: 'pr_num',
           searchable: true
         },
         {

@@ -76,11 +76,6 @@ export default {
           title: 'Reviewers',
           icon: 'account',
           to: { name: 'reviewer' }
-        },
-        {
-          title: 'pr_review_info',
-          icon: 'account',
-          to: { name: 'pr_review_info' }
         }
         // {
         //   title: 'Subtask',
