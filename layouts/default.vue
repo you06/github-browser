@@ -78,11 +78,6 @@ export default {
           to: { name: 'reviewer' }
         }
         // {
-        //   title: 'Search',
-        //   icon: 'cloud-search',
-        //   to: { name: 'search' }
-        // },
-        // {
         //   title: 'Subtask',
         //   icon: 'lightbulb',
         //   to: { name: 'subtask' }

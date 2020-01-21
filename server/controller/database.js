@@ -17,7 +17,7 @@ module.exports = function (cfg, pkg) {
       })
     },
 
-    async getMembers(ctx, next) {
+    async getMembers (ctx, next) {
       ctx.body = json(await pkg.db.queryMembers())
     },
 
@@ -40,14 +40,24 @@ module.exports = function (cfg, pkg) {
       const members = await pkg.db.queryMembers()
       const users = reviews.map(i => i.user)
       for (const m of members) {
-        if (users.indexOf(m.github_id) < 0) {
+        if (!users.includes(m.github_id)) {
           reviews.push({
             user: m.github_id,
-            number: 0
+            pr_num: 0,
+            review_num: 0
           })
         }
       }
       ctx.body = json(reviews)
+    },
+
+    async getPrsByUser (ctx) {
+      const {
+        user,
+        start,
+        end
+      } = ctx.request.query
+      ctx.body = json(await pkg.db.getPrsByUser(user, start, end))
     },
 
     async getReviewerByUser (ctx) {

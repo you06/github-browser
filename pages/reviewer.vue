@@ -1,11 +1,11 @@
 <template>
   <section class="section">
     <section class="selection columns">
-      <b-field label="GitHub" class="column">
+      <!-- <b-field label="GitHub" class="column">
         <button
           :disabled="!selected"
-          class="button field is-primary"
           @click="selected = null"
+          class="button field is-primary"
         >
           <span>Clear selected</span>
         </button>
@@ -13,12 +13,12 @@
       <b-field label="prInfo" class="column">
         <button
           :disabled="!selected"
+          @click="prInfo"
           class="button field is-info"
-          @click="reviewInfo"
         >
           <span>prInfo</span>
         </button>
-      </b-field>
+      </b-field> -->
       <no-ssr>
         <b-field label="Start time" class="column">
           <b-datepicker
@@ -37,8 +37,8 @@
       </no-ssr>
       <b-field label="Search" class="column hidden-label">
         <b-button
-          type="is-info"
           @click="search"
+          type="is-info"
         >
           Search
         </b-button>
@@ -50,8 +50,29 @@
           :data="data"
           :columns="columns"
           :selected.sync="selected"
+          @dblclick="reviewInfo()"
+          :paginated="true"
+          :per-page="5"
+          :current-page="1"
+          :pagination-simple="false"
           focusable
-        />
+        >
+          <template slot-scope="props">
+            <b-table-column field="user" label="Github Id">
+              {{ props.row.user }}
+            </b-table-column>
+            <b-table-column field="pr_num" label="pr_num">
+              <a @click="prInfo(props.row)">
+                {{ props.row.pr_num }}
+              </a>
+            </b-table-column>
+            <b-table-column field="review_num" label="review_num">
+              <a @click="reviewInfo(props.row)">
+                {{ props.row.review_num }}
+              </a>
+            </b-table-column>
+          </template>
+        </b-table>
       </b-tab-item>
 
       <b-tab-item label="Selected">
@@ -79,9 +100,12 @@ export default {
           searchable: true
         },
         {
-          field: 'number',
-          label: 'number',
-          searchable: true
+          field: 'pr_num',
+          label: 'pr_num'
+        },
+        {
+          field: 'review_num',
+          label: 'review_num'
         }
       ]
     }
@@ -121,6 +145,14 @@ export default {
     },
     reviewInfo () {
       this.$router.push({ path: '/reviewInfo',
+        query: {
+          user: this.selected.user,
+          start: this.displayStart,
+          end: formatDatetime(this.time.end)
+        } })
+    },
+    prInfo () {
+      this.$router.push({ path: '/prInfo',
         query: {
           user: this.selected.user,
           start: this.displayStart,

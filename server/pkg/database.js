@@ -113,7 +113,8 @@ module.exports = class {
   async queryReviewers ({ start, end }) {
     const reviewers = await this.query(`SELECT
                                           c.user AS user,
-                                          count( DISTINCT c.pull_number ) AS number
+                                          count( DISTINCT p.title ) AS pr_num,
+                                          count( DISTINCT c.pull_number ) AS review_num
                                         FROM
                                           pulls AS p,
                                           comments AS c 
@@ -128,12 +129,31 @@ module.exports = class {
                                         GROUP BY
                                         USER 
                                         ORDER BY
-                                          number DESC`,
+                                          pr_num DESC`,
     [
       start,
       end
     ])
     return reviewers
+  }
+
+  async getPrsByUser (user, start, end) {
+    const pullInfo = (await this.query(`SELECT DISTINCT
+                                          p.pull_number AS pull_id,
+                                          p.user AS user,
+                                          p.owner AS owner,
+                                          p.repo AS repo,
+                                          title,
+                                          p.created_at AS created_at,
+                                          p.merged_at AS merged_at 
+                                        FROM
+                                          pulls AS p  
+                                        WHERE
+                                          p.user = ?
+                                          AND p.created_at BETWEEN ? 
+                                          AND ?`,
+    [user, start, end]))
+    return pullInfo
   }
 
   async getReviewerByUser (user, start, end) {
@@ -157,14 +177,9 @@ module.exports = class {
                                           AND c.created_at BETWEEN ? 
                                           AND ?`,
     [user, start, end]))
-      // .filter((item) => {
-      //   if (item.user === user) {
-      //     return false
-      //   }
-      //   return true
-      // })
     return pullInfo
   }
+
   async deleteReviewerById (github_id) {
     const status = await this.query('delete from reviewers WHERE github_id = ?', github_id)
     return status
