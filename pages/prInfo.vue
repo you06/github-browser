@@ -47,7 +47,7 @@ export default {
   },
   data () {
     return {
-      line: {
+      line: { // line chart
         title: {
           text: this.$route.query.user
         },
@@ -136,10 +136,11 @@ export default {
               created_at: res[i].created_at.substring(0, 10),
               merged_at: res[i].merged_at.substring(0, 10)
             }
-            if (p.merged_at === '1999-12-31') {
-              p.merged_at = 'closed'
-            }
+            // if (p.merged_at === '1999-12-31') {
+            //   p.merged_at = 'closed'
+            // }
             this.data.push(p)
+            // prepare data for line chart
             if (!this.line.xAxis.data.includes(p.created_at)) {
               this.line.xAxis.data.push(p.created_at)
               this.line.series[0].data.push(1)

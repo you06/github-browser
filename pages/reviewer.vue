@@ -203,6 +203,7 @@ export default {
         .then((result) => {
           const res = result.data.data
           this.data = res
+          // get the data for bar chart
           this.bar.yAxis.data = []
           this.bar.series[0].data = []
           this.bar.series[1].data = []

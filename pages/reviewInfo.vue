@@ -17,7 +17,7 @@
           {{ props.row.repo }}
         </b-table-column>
         <b-table-column field="title" label="Title">
-          <a target="_blank" :href="`https://github.com/${props.row.owner}/${props.row.repo}/pull/${props.row.pull_id}`">
+          <a :href="`https://github.com/${props.row.owner}/${props.row.repo}/pull/${props.row.pull_id}`" target="_blank">
             {{ props.row.title }}
           </a>
         </b-table-column>
@@ -35,7 +35,6 @@
 <script>
 import ECharts from 'vue-echarts/components/ECharts'
 // import { getLastDayinWeek, roundTo4pm, formatDatetime } from '@/utils/datetime'
-// import 'echarts/lib/chart/bar'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/component/title'
 // import 'echarts/lib/component/legend'
@@ -47,7 +46,7 @@ export default {
   },
   data () {
     return {
-      line: {
+      line: { // add data for line chart
         title: {
           text: this.$route.query.user
         },
@@ -140,6 +139,7 @@ export default {
             //   p.merged_at = 'closed'
             // }
             this.data.push(p)
+            // prepare data for line chart
             if (!this.line.xAxis.data.includes(p.created_at)) {
               this.line.xAxis.data.push(p.created_at)
               this.line.series[0].data.push(1)
