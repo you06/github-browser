@@ -106,7 +106,7 @@ module.exports = class {
     }
   }
 
-  async queryMembers() {
+  async queryMembers () {
     return await this.query(`SELECT * FROM reviewers`)
   }
 
@@ -134,6 +134,24 @@ module.exports = class {
       start,
       end
     ])
+    const pr = (await this.query(`SELECT 
+                                p.user AS user,
+                                count(*) AS cnt
+                              FROM
+                                pulls AS p  
+                              WHERE
+                                p.created_at BETWEEN ? 
+                                AND ?
+                              GROUP BY
+                                p.user`,
+    [start, end]))
+    for (let i = 0; i < reviewers.length; i++) {
+      for (let j = 0; j < pr.length; j++) {
+        if (reviewers[i].user === pr[j].user) {
+          reviewers[i].pr_num = pr[j].cnt
+        }
+      }
+    }
     return reviewers
   }
 

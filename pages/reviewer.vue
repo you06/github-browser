@@ -48,9 +48,7 @@
       <b-tab-item label="Table">
         <b-table
           :data="data"
-          :columns="columns"
           :selected.sync="selected"
-          @dblclick="reviewInfo()"
           :paginated="true"
           :per-page="5"
           :current-page="1"
@@ -79,35 +77,101 @@
         <pre>{{ selected }}</pre>
       </b-tab-item>
     </b-tabs>
+    <div id="app">
+      <v-chart :options="bar" class="my-chart" />
+    </div>
   </section>
 </template>
 
 <script>
+import ECharts from 'vue-echarts/components/ECharts'
 import { getLastDayinWeek, roundTo4pm, formatDatetime } from '@/utils/datetime'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/component/title'
+import 'echarts/lib/component/legend'
+import 'echarts/lib/component/tooltip'
 export default {
+  name: 'App',
+  components: {
+    'v-chart': ECharts
+  },
   data () {
     return {
+      bar: {
+        title: {
+          text: 'sig_member'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        legend: {
+          data: ['pr_cnt', 'review_cnt']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'value'
+        },
+        yAxis: {
+          type: 'category',
+          data: []
+        },
+        series: [
+          {
+            name: 'pr_cnt',
+            type: 'bar',
+            stack: '总量',
+            label: {
+              show: true,
+              position: 'insideRight'
+            },
+            data: []
+          },
+          {
+            name: 'review_cnt',
+            type: 'bar',
+            stack: '总量',
+            label: {
+              show: true,
+              position: 'insideRight'
+            },
+            data: [],
+            barWidth: '15px'
+            // barGap: '50%',
+            // barCategoryGap: '50%'
+          }
+        ]
+      },
       data: [],
       selected: this.data,
       time: {
         start: getLastDayinWeek(4),
         end: new Date()
-      },
-      columns: [
-        {
-          field: 'user',
-          label: 'Github Id',
-          searchable: true
-        },
-        {
-          field: 'pr_num',
-          label: 'pr_num'
-        },
-        {
-          field: 'review_num',
-          label: 'review_num'
-        }
-      ]
+      }
+      // columns: [
+      //   {
+      //     field: 'user',
+      //     label: 'Github Id',
+      //     searchable: true
+      //   },
+      //   {
+      //     field: 'pr_num',
+      //     label: 'pr_num',
+      //     sortable: true
+      //   },
+      //   {
+      //     field: 'review_num',
+      //     label: 'review_num',
+      //     sortable: true
+      //   }
+      // ]
     }
   },
   computed: {
@@ -139,22 +203,43 @@ export default {
         .then((result) => {
           const res = result.data.data
           this.data = res
+          // get the data for bar chart
+          this.bar.yAxis.data = []
+          this.bar.series[0].data = []
+          this.bar.series[1].data = []
+          for (let i = res.length - 1; i >= 0; i--) {
+            if (res[i].pr_num === 0) {
+              continue
+            } else {
+              this.bar.yAxis.data.push(res[i].user)
+            }
+            if (res[i].pr_num === 0) {
+              continue
+            } else {
+              this.bar.series[0].data.push(res[i].pr_num)
+            }
+            if (res[i].review_num === 0) {
+              continue
+            } else {
+              this.bar.series[1].data.push(res[i].review_num)
+            }
+          }
         }).catch((err) => {
           console.log(err.response)
         })
     },
-    reviewInfo () {
+    reviewInfo (row) {
       this.$router.push({ path: '/reviewInfo',
         query: {
-          user: this.selected.user,
+          user: row.user,
           start: this.displayStart,
           end: formatDatetime(this.time.end)
         } })
     },
-    prInfo () {
+    prInfo (row) {
       this.$router.push({ path: '/prInfo',
         query: {
-          user: this.selected.user,
+          user: row.user,
           start: this.displayStart,
           end: formatDatetime(this.time.end)
         } })
