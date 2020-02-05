@@ -1,24 +1,6 @@
 <template>
   <section class="section">
     <section class="selection columns">
-      <!-- <b-field label="GitHub" class="column">
-        <button
-          :disabled="!selected"
-          @click="selected = null"
-          class="button field is-primary"
-        >
-          <span>Clear selected</span>
-        </button>
-      </b-field>
-      <b-field label="prInfo" class="column">
-        <button
-          :disabled="!selected"
-          @click="prInfo"
-          class="button field is-info"
-        >
-          <span>prInfo</span>
-        </button>
-      </b-field> -->
       <no-ssr>
         <b-field label="Start time" class="column">
           <b-datepicker

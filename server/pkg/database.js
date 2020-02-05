@@ -163,13 +163,17 @@ module.exports = class {
                                           p.repo AS repo,
                                           title,
                                           p.created_at AS created_at,
+                                          p.updated_at AS updated_at,
+                                          p.closed_at AS closed_at,
                                           p.merged_at AS merged_at 
                                         FROM
                                           pulls AS p  
                                         WHERE
                                           p.user = ?
                                           AND p.created_at BETWEEN ? 
-                                          AND ?`,
+                                          AND ?
+                                        ORDER BY
+                                          created_at DESC`,
     [user, start, end]))
     return pullInfo
   }
