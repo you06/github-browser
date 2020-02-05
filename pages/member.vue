@@ -5,7 +5,7 @@
       @click="selected = null"
       class="button field is-primary"
     >
-      <spWan>Clear selected</spWan>
+      <span>Clear selected</span>
     </button>
     <button
       @click="add"
