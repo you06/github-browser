@@ -175,7 +175,6 @@ export default {
             }
           }
           this.closed_at_cnt -= this.merged_at_cnt
-          console.log(this.line.xAxis.data)
         }).catch((err) => {
           console.log(err.response)
         })

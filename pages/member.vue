@@ -2,29 +2,29 @@
   <section class="section">
     <button
       :disabled="!selected"
-      @click="selected = null"
       class="button field is-primary"
+      @click="selected = null"
     >
       <span>Clear selected</span>
     </button>
     <button
-      @click="add"
       class="button field is-success"
       to="./add_member"
+      @click="add"
     >
       <span>Add</span>
     </button>
     <button
       :disabled="!selected"
-      @click="edit"
       class="button field is-info"
+      @click="edit"
     >
       <span>edit</span>
     </button>
     <button
       :disabled="!selected"
-      @click="deleteRow"
       class="button field is-danger"
+      @click="deleteRow"
     >
       <span>delete</span>
     </button>
@@ -135,7 +135,7 @@ export default {
       this.$router.push({ path: '/prInfo',
         query: {
           user: row.github_id,
-          start: new Date(new Date().getTime() - (new Date().getDay() + 365) * 24 * 3600 * 1000),
+          start: formatDatetime(new Date(new Date().getTime() - (new Date().getDay() + 365) * 24 * 3600 * 1000)),
           end: formatDatetime(new Date())
         } })
     },
