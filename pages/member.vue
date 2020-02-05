@@ -1,11 +1,11 @@
-l<template>
+<template>
   <section class="section">
     <button
       :disabled="!selected"
       @click="selected = null"
       class="button field is-primary"
     >
-      <span>Clear selected</span>
+      <spWan>Clear selected</spWan>
     </button>
     <button
       @click="add"
