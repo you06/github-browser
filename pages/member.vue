@@ -2,29 +2,29 @@
   <section class="section">
     <button
       :disabled="!selected"
-      @click="selected = null"
       class="button field is-primary"
+      @click="selected = null"
     >
       <span>Clear selected</span>
     </button>
     <button
-      @click="add"
       class="button field is-success"
       to="./add_member"
+      @click="add"
     >
       <span>Add</span>
     </button>
     <button
       :disabled="!selected"
-      @click="edit"
       class="button field is-info"
+      @click="edit"
     >
       <span>edit</span>
     </button>
     <button
       :disabled="!selected"
-      @click="deleteRow"
       class="button field is-danger"
+      @click="deleteRow"
     >
       <span>delete</span>
     </button>
@@ -33,15 +33,36 @@
       <b-tab-item label="Table">
         <b-table
           :data="data"
-          :columns="columns"
           :selected.sync="selected"
           :paginated="true"
           :per-page="5"
           :current-page="1"
           :pagination-simple="false"
-          :pagination-position="bottom"
           focusable
-        />
+        >
+          <template slot-scope="props">
+            <b-table-column field="github_id" label="Github Id">
+              <a @click="prInfo(props.row)">
+                {{ props.row.github_id }}
+              </a>
+            </b-table-column>
+            <b-table-column field="organization" label="Organization">
+              {{ props.row.organization }}
+            </b-table-column>
+            <b-table-column field="email" label="Email">
+              {{ props.row.email }}
+            </b-table-column>
+            <b-table-column field="slack_id" label="pr_cnt">
+              {{ props.row.slack_id }}
+            </b-table-column>
+            <b-table-column field="group_name" label="repo">
+              {{ props.row.group_name }}
+            </b-table-column>
+            <b-table-column field="role" label="Role">
+              {{ props.row.role }}
+            </b-table-column>
+          </template>
+        </b-table>
       </b-tab-item>
 
       <b-tab-item label="Selected">
@@ -52,43 +73,48 @@
 </template>
 
 <script>
+import { formatDatetime } from '@/utils/datetime'
 export default {
   data () {
     return {
       data: [],
-      selected: this.data,
-      columns: [
-        {
-          field: 'github_id',
-          label: 'Github Id',
-          searchable: true
-        },
-        {
-          field: 'organization',
-          label: 'Organization',
-          searchable: true
-        },
-        {
-          field: 'email',
-          label: 'Email',
-          searchable: true
-        },
-        {
-          field: 'slack_id',
-          label: 'pr_num',
-          searchable: true
-        },
-        {
-          field: 'group_name',
-          label: 'Group Name',
-          searchable: true
-        },
-        {
-          field: 'role',
-          label: 'Role',
-          searchable: true
-        }
-      ]
+      selected: this.data
+      // time: {
+      //   start: getLastDayinWeek(4),
+      //   end: new Date()
+      // }
+      // columns: [
+      //   {
+      //     field: 'github_id',
+      //     label: 'Github Id',
+      //     searchable: true
+      //   },
+      //   {
+      //     field: 'organization',
+      //     label: 'Organization',
+      //     searchable: true
+      //   },
+      //   {
+      //     field: 'email',
+      //     label: 'Email',
+      //     searchable: true
+      //   },
+      //   {
+      //     field: 'slack_id',
+      //     label: 'pr_num',
+      //     searchable: true
+      //   },
+      //   {
+      //     field: 'group_name',
+      //     label: 'Group Name',
+      //     searchable: true
+      //   },
+      //   {
+      //     field: 'role',
+      //     label: 'Role',
+      //     searchable: true
+      //   }
+      // ]
     }
   },
   mounted () {
@@ -104,6 +130,14 @@ export default {
         }).catch((err) => {
           console.log(err.response)
         })
+    },
+    prInfo (row) {
+      this.$router.push({ path: '/prInfo',
+        query: {
+          user: row.github_id,
+          start: formatDatetime(new Date(new Date().getTime() - (new Date().getDay() + 365) * 24 * 3600 * 1000)),
+          end: formatDatetime(new Date())
+        } })
     },
     add () {
       this.$router.push('/add_member')
